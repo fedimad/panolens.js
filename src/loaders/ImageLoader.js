@@ -37,27 +37,34 @@ const ImageLoader = {
         // Cached
         cached = THREE.Cache.get(reference ? reference : url);
 
-        if (cached !== undefined) {
+         if ( cached !== undefined ) {
 
-            if (onLoad) {
+             if ( onLoad ) {
+-
+-                setTimeout( function () {
+-
+-                    onProgress( { loaded: 1, total: 1 } );
+-                    onLoad( cached );
+-
+-                }, 0 );
++
++                if ( cached.complete ) {
++                    setTimeout( function () {
++
++                        onProgress( { loaded: 1, total: 1 } );
++                        onLoad( cached );
++
++                    }, 0 );
++                } else {
++                    cached.addEventListener( 'load', function () {
++
++                        onProgress( { loaded: 1, total: 1 } );
++                        onLoad( cached );
++
++                    }, false );
++                }
 
-                if ( cached.complete && cached.src ) {
-                    setTimeout( function () {
-
-                        onProgress( { loaded: 1, total: 1 } );
-                        onLoad( cached );
-
-                    }, 0 );
-                } else {
-                    cached.addEventListener( 'load', function () {
-
-                        onProgress( { loaded: 1, total: 1 } );
-                        onLoad( cached );
-
-                    }, false );
-                }
-
-            }
+             }}
 
             return cached;
 
